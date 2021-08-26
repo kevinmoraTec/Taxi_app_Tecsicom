@@ -1,0 +1,59 @@
+<div class="container p-2">
+  {{#each listarUsuarios}}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name User</th>
+        <th scope="col">Numero User</th>
+        <th scope="col" class="text-center">Email</th>
+        <!--<th scope="col" class="text-center">Password</th>-->
+        <th scope="col" class="text-right">Nickname</th>
+        <th scope="col" class="text-right">Ruc</th>
+        <th scope="col" class="text-right">Birthday Date</th>
+        <th scope="col" class="text-right">Direccion</th>
+        <th scope="col" class="text-right">Date CreateUser</th>
+        <th scope="col" class="text-right">Acciones</th>
+        <th scope="col" class="text-right">Acciones</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">{{idUser}}</td>
+        <td>{{NameUser}}</td>
+        <td>{{NumberPhone}}</td>
+        <td>{{Email}}</td>
+       <!-- <td>{{Password}}</td>-->
+        <td class="text-right">{{Nickname}}</td>
+        <td class="text-right">{{Ruc}}</td>
+        <td class="text-right">{{BirthdayDate}}</td>
+        <td class="text-right">{{Direccion}}</td>
+        <td class="text-right">{{DateCreateUser}}</td>
+        <td class="text-right">
+          <a href="/deleteUser/{{idUser}}" class="btn btn-danger">Eliminar</a>
+        </td>
+        <td class="text-right">
+          <a href="/editUser/{{idUser}}" class="btn btn-secondary">Editar</a>
+        </td>
+
+
+
+      </tr>
+    </tbody>
+     {{else}}
+  <div class="col-md-4 mx-auto">
+    <div class="card card-body text-center">
+      <p>No Tienes peticiones realiza una</p>
+      <a href="/">No hay perfiles</a>
+    </div>
+  </div>
+    {{/each}}
+
+</div>
+  
+
+
+
+
+
