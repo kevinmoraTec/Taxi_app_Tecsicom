@@ -12,15 +12,15 @@ helpers.encriptePassword= async(password)=>{//Recibimos la contraseña
 }
 
 //Metodo para compara las contraseñas encryptadas
-helpers.matchPassword =  async (password,savedPasword)=>{
-    try {
+// helpers.matchPassword =  async (password,savedPasword)=>{
+//     try {
     
-    return await bcrypt.compare(password,savedPasword)
+//     return await bcrypt.compare(password,savedPasword)
 
-    } catch (error) {
-        console.log("de la cpntraseñ"+error)
-    }
-};
+//     } catch (error) {
+//         console.log("de la cpntraseñ"+error)
+//     }
+// };
 
 
 

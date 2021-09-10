@@ -2,7 +2,7 @@
 
 const express=require('express')
 const router=express.Router();
-const mysqlConnection=require('../database')
+const pool=require('../database')
 
 /// Mostramos en Formulario para emitir una Solicitud de taxi
 router.get('/add',(req,res)=>{
@@ -11,26 +11,25 @@ router.get('/add',(req,res)=>{
 
 ///Guardamos una peticion de taxi
 router.post('/add',async (req,res)=>{
-    let fecha=new Date(); 
+    //let fecha=new Date(); 
     console.log(req.body)
+    let id=2
     const {startDireccion,finalDireccion,descripcion}=req.body
-    
-    let id=1
+    const newPeticion={
+        
+        startDireccion,
+        finalDireccion,
+        descripcion
+    }
+    console.log(newPeticion)
     const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
-    await mysqlConnection.query(query,[startDireccion,finalDireccion,descripcion],(err,rows,filds)=>{
-        if(!err){
-            req.flash('success','Se genero una peticion Correctamente')
-            console.log('Se guardo un Peticion de Taxi')
-            res.redirect('/peti')
-
-        }else{
-            console.log('Error de Taxi'+err)
-        }
-    })
+    await pool.query(query,[startDireccion,finalDireccion,descripcion])
+    
 })
 
 // Listamos todas las peticions creadas  
-router.get('/',async (req,res)=>{
+router.get('/allpeticiones',async (req,res)=>{
+    // 1.19 //https://www.youtube.com/watch?v=qJ5R9WTW0_E 
     await mysqlConnection.query("SELECT * FROM bdAplication_taxi.Request",(err,rows,fields)=>{
         if(!err){
             let listaPeticiones=rows

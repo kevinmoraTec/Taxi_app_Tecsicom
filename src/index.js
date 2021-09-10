@@ -78,8 +78,8 @@ app.use((req,res,next)=>{
 //Routes 
 app.use(require('./routes/index'))
 app.use(require('./routes/autentication'))
-app.use('/peti',require('./routes/peticiones'))
-app.use('/asig',require('./routes/asignaciones'))
+app.use(require('./routes/peticiones'))
+app.use(require('./routes/asignaciones'))
 app.use(require('./routes/drivers'))
 
 

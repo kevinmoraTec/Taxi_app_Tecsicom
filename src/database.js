@@ -1,20 +1,25 @@
 const mysql=require('mysql')
+const {promisify}=require('util')
+const {database}=require('./keys')
 
-const mysqlConnection=mysql.createConnection({ // Creamos la conexion con los parametros
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'bdAplication_taxi',
-    port: '8889'
-})
-
-mysqlConnection.connect(function (err){
+const pool =mysql.createPool(database)
+pool.getConnection((err,connection)=>{
     if(err){
-        console.log("De la base de datos"+err);
-        return;
-    }else{
-        console.log('Db is Coneccted Exelent')
+        if(err.code ==='PROTOCOL_CONNECTION_LOST'){
+            console.error('Database Coneection wasClose')
+        }if(err.code ==='ER_CON_COUNT_ERROR'){
+            console.error('DATABASE HAS TO MANY CONNECTIONS')
+        }if(err.code ==='ECONNREFUSED'){
+            console.error('DATABASE CONNECTION WAS REFUSED')
+        }
     }
-});
+    if(connection){
+    connection.release()
+    console.log('DB IS CONNECTED_Exelect')
+    }
+    return
+})
+//Para poder Realizar Promesas en la querys
+pool.query=promisify(pool.query)
 
-module.exports=mysqlConnection;
+module.exports=pool;
