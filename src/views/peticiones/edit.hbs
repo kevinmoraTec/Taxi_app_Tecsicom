@@ -6,15 +6,15 @@
                     Ingresa tu Direccion Actual y Direccion  ddestino
                 </div>
                 <div class="mt-3">
-                    <form action="/peti/edit/{{edit.idRequest}}" method="POST">
+                    <form action="/edit/{{peticionesID.idRequest}}" method="POST">
                         <div class="mt-3">
-                            <input type="text" value="{{edit.StartDirection}}" class="form-control" name="startDireccion"  placeholder="Direccion Actual" autofocus>
+                            <input type="text" value="{{peticionesID.StartDirection}}" class="form-control" name="startDireccion"  placeholder="Direccion Actual" autofocus>
                         </div>
                         <div class="mt-3">
-                            <input type="text" value="{{edit.FinalDirection}}" class="form-control" name="finalDireccion" placeholder="Direccrion Destino" >
+                            <input type="text" value="{{peticionesID.FinalDirection}}" class="form-control" name="finalDireccion" placeholder="Direccrion Destino" >
                         </div>
                         <div class="mt-3">
-                            <textarea name="descripcion" rows="2" class="form-control" placeholder="Instrucciones Especiales">{{edit.Descriptions}}</textarea>
+                            <textarea name="descripcion" rows="2" class="form-control" placeholder="Instrucciones Especiales">{{peticionesID.Descriptions}}</textarea>
                         </div>
                         <div class="mt-3">
                             <input type="hidden" name="fechaPeticion" value="${new Date()}">
