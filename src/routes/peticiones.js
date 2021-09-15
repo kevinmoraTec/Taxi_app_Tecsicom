@@ -24,6 +24,7 @@ router.post('/add',async (req,res)=>{
     console.log(newPeticion)
     const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
     await pool.query(query,[startDireccion,finalDireccion,descripcion])
+    req.flash('success','Peticion creada Correctamente')
     res.redirect('/allpeticiones')//los redireccionamos a la vista donde esta sus Peticioes
     
 })
@@ -41,6 +42,8 @@ router.get('/delete/:id',async (req,res)=>{//cuando te envien a la ruta delete j
     const {id} =req.params;
     //const query="DELETE FROM `bdAplication_taxi`.`Request` WHERE `idRequest`='"+idRequest+"'"
     await pool.query('DELETE FROM Request WHERE idRequest =?',[id])
+    req.flash('success','Peticion Eliminada Correctamente')
+
     res.redirect('/allpeticiones')//los redireccionamos a la vista donde esta sus Peticioes
 })
 
@@ -60,9 +63,10 @@ router.post('/edit/:id', async (req,res)=>{// Metodo para actualizar una nota ya
         finalDireccion,
         descripcion
     }
-    console.log(newPeticion)
+    //console.log(newPeticion)
     const query="UPDATE `bdAplication_taxi`.`Request` SET `StartDirection`=?, `FinalDirection`=?, `Descriptions`=? WHERE `idRequest`='"+[id]+"';"
     await pool.query(query,[startDireccion,finalDireccion,descripcion])
+    req.flash('success','Peticion Actualizada Correctamente')
     res.redirect('/allpeticiones') 
     //https://www.youtube.com/watch?v=qJ5R9WTW0_E
     //min 1.53

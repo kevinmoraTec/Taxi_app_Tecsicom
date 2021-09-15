@@ -2,13 +2,14 @@ const express=require('express')
 const morgan=require('morgan')// Muestra por consola todas las Peticioes que van llegando 
 const  exphbs=require('express-handlebars')
 const path=require('path')
-const flash=require('connect-flash')
 const session=require('express-session')
 const mySqlStore=require('express-mysql-session')
 const {database}=require('./keys')
 const passport=require('passport')
 const multer=require('multer')
 const { v4: uuidv4 } = require('uuid');
+const flash=require('connect-flash')
+
 
 // Inicializaciones 
 const app=express();
@@ -46,8 +47,10 @@ app.use(flash());
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}))// Nos permite aceptar desde el formulario los datos que se envien 
 app.use(express.json());
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 app.use(multer({
     storage,

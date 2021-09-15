@@ -1,95 +1,118 @@
 //Procesamos los datos de Registra para manejarlo con los modulos passport
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const pool = require("../database");
+const helpers = require("../lib/helpers");
 
-const passport=require('passport')
-const LocalStrategy=require('passport-local').Strategy;
-const mysqlConnection=require('../database')
-const helpers=require('../lib/helpers')
-
-// Login de Usuario / Una vez que el Usuario se registra debe iniciar seccion
-
-passport.use('local.signin',new LocalStrategy({
-    usernameField:'email',
-    passwordField:'password',
-    passReqToCallback: true
-},async(req,email,password,done)=>{
-    console.log(req.body)
-    console.log(email)
-    console.log(password)
-
-    await mysqlConnection.query("SELECT * FROM bdAplication_taxi.User where Email ='"+[email]+"';",(err,rows,fields)=>{
-        if(!err){
-            console.log(rows[0])
-            if (rows.length > 0) {// Siencotro un registro con ese correo
-                console.log('Si lo encontre')
-                const user=rows[0]
-              const valiPassword= helpers.matchPassword(password,user.Password)//almacenamos un true o false
-                if(valiPassword){
-                    done(null,user,req.flash('success','Wlwcome'+user.NameUser))
-                }else{
-                    console.log('Contraseña Incorrecta')
-                    done(null,false,req.flash('message','Incorrect password'))
-                }
-            }else{
-                console.log('Email no eexiste')
-                return done(null,false,req.flash('message','Email no Existe'))
-            } 
-        }else{
-            console.log('Eror buscar correr passport signin '+err)
+//Cuando el usuario Quiera acceder a nuestro sistema se logee
+passport.use(
+  "local.signin",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+      passReqToCallback: true,
+    },
+    async (req, email, password, done) => {
+      const rows = await pool.query("SELECT * FROM User WHERE Email=?", [
+        email,
+      ]);
+      if (rows.length > 0) {
+        ///Verificamos si el correo que ingrsa el User existe
+        const user = rows[0];
+        console.log("de Signin " + user);
+        const validPassword = await helpers.compararPassword(
+          password,
+          user.Password
+        );
+        console.log("!<<<! " + validPassword);
+        if (validPassword) {
+          //Verificamos que las Contraseñas sean iguales del Usuario
+          done(
+            null,
+            user,
+            req.flash("success", "Welcome " + user.NameUser + "Estas Activo")
+          );
+        } else {
+          //Si la contraseña no es Igual
+          done(null, false, req.flash("message", "Incorrecto Password "));
         }
-    })
-}))
+      } else {
+        //Si no existe el correo
+        console.log("No se encontro el User");
+        return done(
+          null,
+          false,
+          req.flash("message", "El Usario con ese Correo no Existe")
+        );
+      }
+    }
+  )
+);
 
-
-
-/// Guardamos un Usuario Y Encriptamos su Constraseña // Signup /(Cuando se registra) 
-passport.use('local.signup',new LocalStrategy({ //aqui a dentro colocamos lo que queremos recibir
-    usernameField:'email',
-    passwordField:'password',
-    passReqToCallback:true
-},async(req,email,password,done)=>{//Definimos qie lo que va hacer al momento que dse registren
-    const {nombre,numbePhone,nickname,birthayDate,ruc,direccion}=req.body;
-    const newUser={
+/// Registrar al usuario en mi Base de datos y lo serializamos y deserialisamos
+passport.use(
+  "local.signup",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+      passReqToCallback: true,
+    },
+    async (req, email, password, done) => {
+      const { nombre, numbePhone, nickname, birthayDate, ruc, direccion } =
+        req.body;
+      const newUser = {
         nombre,
         numbePhone,
         email,
-        password,   
+        password,
         nickname,
         birthayDate,
         ruc,
-        direccion 
-    };
-    //Encriptamos la contraseña y la Guardamos
-    newUser.password=await helpers.encriptePassword(password)//utlizamos el metdo para encriptar la contraseña y nos retorna encriptada  
-    
-    mysqlConnection.query("INSERT INTO `bdAplication_taxi`.`User` (`NameUser`,`NumberPhone`, `Email`, `Password`, `Nickname`, `BirthdayDate`, `Ruc`, `Direccion`) VALUES ('"+[nombre]+"','"+[numbePhone]+"','"+[email]+"', '"+[newUser.password]+"', '"+[nickname]+"', '"+[birthayDate]+"', '"+[ruc]+"', '"+[direccion]+"');",(err,rows,filds)=>{
-       //newUser.idUser=rows.insertId
-        if(!err){
-            console.log(rows)
-           newUser.idUser=rows.insertId;
-            return done(null,newUser)
-            console.log('Se guardo un Usuario de Taxi')
-        }else{
-            console.log('Error de Guardar User'+err)
-        }
-    })
+        direccion,
+      };
+      //console.log(req.body)
+      const newPassword = await helpers.encriptarPassword(password);
+      const query =
+        "INSERT INTO `bdAplication_taxi`.`User` (`NameUser`, `NumberPhone`, `Email`, `Password`, `Nickname`, `BirthdayDate`, `Ruc`, `Direccion`) VALUES ('" +
+        nombre +
+        "', '" +
+        numbePhone +
+        "', '" +
+        email +
+        "', '" +
+        newPassword +
+        "', '" +
+        nickname +
+        "', '" +
+        birthayDate +
+        "', '" +
+        ruc +
+        "', '" +
+        direccion +
+        "');";
+      const result = await pool.query(query, [
+        nombre,
+        numbePhone,
+        nickname,
+        birthayDate,
+        ruc,
+        direccion,
+      ]);
+      newUser.idUser = result.insertId;
+      console.log(result);
+      return done(null, newUser);
+    }
+  )
+);
 
-}));
-
-passport.serializeUser((user,done)=>{//Almacenamos al user en seccion
-    done(null,user.idUser);
+passport.serializeUser((user, done) => {
+  done(null, user.idUser);
 });
 
-passport.deserializeUser(async (idUser,done)=>{
-    await mysqlConnection.query("SELECT * FROM bdAplication_taxi.User where idUser ='"+[idUser]+"';",(err,rows,filds)=>{
-        if (!err) {
-            console.log("Deserializar"+rows[0])
-            console.log(Object.values(rows[0]));
-            //done(null,rows[0])
-        } else {
-            console.log("Error en deserializeUser consulta "+err)
-        }
-        done(null,rows[0])
-    })
-    //done(null,user)
-   // done(null,idUser)
-})
+passport.deserializeUser(async (idUser, done) => {
+  const rows = await pool.query("SELECT * FROM User WHERE idUser=?", [idUser]);
+  done(null, rows[0]);
+  // console.log('deserializar  '+Object.values(rows[0]))
+});

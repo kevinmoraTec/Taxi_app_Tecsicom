@@ -1,9 +1,13 @@
 // para logear los usuarios del sistema y clientes
 const express=require('express');
 const router=express.Router(); //objeto para definir rutas del navegador
-const mysqlConnection=require('../database')//utilizamos la coneccion para guardar eliminar 
+const pool=require('../database')//utilizamos la coneccion para guardar eliminar 
 const passport=require('passport');
 const helpers = require('../lib/helpers');
+
+
+
+
 
 router.get('/signup',(req,res)=>{// Ruta para Renderizar el Formulario
     res.render('../views/autentication/signup.hbs')
@@ -19,10 +23,10 @@ router.get('/signup',(req,res)=>{// Ruta para Renderizar el Formulario
 //     res.send('ok')
 // })
 
-router.post('/signup',passport.authenticate('local.signup',{ 
+router.post('/signup', passport.authenticate('local.signup',{
     successRedirect:'/profileimg',
-    failureRedirect:'/signup',
-    failureFlash: true 
+        failureRedirect: '/signup',
+        failureFlash: true
 }))
 
 
@@ -59,7 +63,7 @@ router.post('/profileimg',async(req,res)=>{
     const {mimetype,filename,path}=req.file;
     console.log("las "+mimetype,filename,path)
         //limit 1
-        await mysqlConnection.query("SELECT idUser FROM User ORDER BY idUser DESC;",(err,rows,fields)=>{
+        await pool.query("SELECT idUser FROM User ORDER BY idUser DESC;",(err,rows,fields)=>{
         
         if (!err) {
             let idUltimoUsr;
@@ -67,10 +71,11 @@ router.post('/profileimg',async(req,res)=>{
                 idUltimoUsr=v;
             }
             //Insertamos la imagen en la base de datos
-            mysqlConnection.query("INSERT INTO `bdAplication_taxi`.`ImgUsers` (`id_User`, `Type`, `Name`,`Data`) VALUES ('"+[idUltimoUsr]+"', '"+[mimetype]+"', '"+[filename]+"','"+[path]+"');",(err,rows,fields )=>{
+            pool.query("INSERT INTO `bdAplication_taxi`.`ImgUsers` (`id_User`, `Type`, `Name`,`Data`) VALUES ('"+[idUltimoUsr]+"', '"+[mimetype]+"', '"+[filename]+"','"+[path]+"');",(err,rows,fields )=>{
                 if (!err) {
                     req.flash('success','Se Guardo Correctamente la Imagen')
-                    res.send('Se guardo la Imagen Revisala')
+                    res.redirect('/signin')
+                    //res.send('Se guardo la Imagen Revisala (Aqui Falta el signin)')
                     console.log('Se guardo la Imagen Revisala')
                 } else {
                     console.log("No se Inserto en la BD "+err)
@@ -86,76 +91,38 @@ router.post('/profileimg',async(req,res)=>{
     
 })
 
-// router.post('/add',async (req,res)=>{
-//     let fecha=new Date();
-//     console.log(req.body)
-//     const {startDireccion,finalDireccion,descripcion}=req.body
-    
-//     let id=1
-//     const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
-//     await mysqlConnection.query(query,[startDireccion,finalDireccion,descripcion],(err,rows,filds)=>{
-//         if(!err){
-//             req.flash('success','Se genero una peticion Correctamente')
-//             console.log('Se guardo un Peticion de Taxi')
-//             res.redirect('/peti')
-
-//         }else{
-//             console.log('Error de Taxi'+err)
-//         }
-//     })
-// })
 
 ///// Para poder Listar  los Clientes registrados 
 router.get('/allUsers',async(req,res)=>{
-    await mysqlConnection.query("SELECT * FROM bdAplication_taxi.User;",(err,rows,fields)=>{
-        if (!err) {
-            let listarUsuarios=rows
-            console.log(listarUsuarios)
-            res.render('../views/autentication/allProfile.hbs',{listarUsuarios})
-        } else {
-            console.log('error Listar todos los usuarios'+err)
-        }
-    })
-});
+    const listarUsuarios=await pool.query('SELECT * FROM bdAplication_taxi.User');
+    //console.log(listarUsuarios)
+    res.render('../views/autentication/allProfile.hbs',{listarUsuarios})
+    //res.redirect('/allUsers')
+})
 
 //// Para eliminar un usuario registrado ///1.40
 router.get('/deleteUser/:idUser',async(req,res)=>{
     const {idUser} =req.params
-
-    await mysqlConnection.query("DELETE FROM `bdAplication_taxi`.`User` WHERE `idUser`='"+[idUser]+"';",(err,rows,fields)=>{
-        if (!err) {
-            res.redirect('/allUsers')
-        } else {
-            console.log('Error al Eliminar UserRegistraso'+err)
-        }
-    })
+    await pool.query('DELETE FROM User WHERE idUser =?',[idUser])
+    req.flash('success','Usuario Eliminado Correctamente')
+    res.redirect('/allUsers')
     // console.log(req.params.idUser)
     // res.send('Eliminado')
 })
 
-router.post('/allUsers',(res,req)=>{
-    
-})
 
 /// Para Poder editar los datos del perfil de User.
 router.get('/editUser/:idUser',async(req,res)=>{
     const {idUser}=req.params;
-    console.log(idUser)
-    await mysqlConnection.query("SELECT * FROM `bdAplication_taxi`.`User` WHERE `idUser`='"+[idUser]+"';",(err,rows,fields)=>{
-        if(!err){
-            const edit=rows[0];
-            console.log(edit)
-            res.render('../views/autentication/editProfile.hbs',{edit})
-        }else{
-            console.log("Eror Editar User"+err)
-        }     
-    })
+    const profile= await pool.query('SELECT * FROM User WHERE idUser =?',[idUser])
+    console.log(profile[0])
+    res.render('../views/autentication/editProfile.hbs',{profile:profile[0]})
 })
 
-// Editar los datos del Perfil
 
+// Editar los datos del Perfil
 router.post('/editUser/:idUser',async (req,res)=>{
-    const {idUser} =req.params
+    const {idUser} =req.params  
     const {nombre,numbePhone,email,nickname,ruc,direccion}=req.body;
     const newUser={
         nombre,
@@ -165,16 +132,12 @@ router.post('/editUser/:idUser',async (req,res)=>{
         ruc,
         direccion 
     };
-   // newUser.password=await helpers.encriptePassword(password)//utlizamos el metdo para encriptar la contraseña y nos retorna encriptada 
-    await mysqlConnection.query("UPDATE `bdAplication_taxi`.`User` SET `NameUser`='"+[nombre]+"', `NumberPhone`='"+[numbePhone]+"', `Email`='"+[email]+"',`Nickname`='"+[nickname]+"', `Ruc`='"+[ruc]+"', `Direccion`='"+[direccion]+"' WHERE `idUser`='"+[idUser]+"';",(err,rows,fields)=>{
-        if(!err){
-            console.log('Actualizado con Exito')
-            res.redirect('/allUsers')
-        }else{
-            console.log('Error al Actualizar Perfil'+err)
-
-        }
-    })
+    console.log(newUser)
+    // pool.query("UPDATE `bdAplication_taxi`.`User` SET `NameUser`='"+nombre+"', `NumberPhone`='"+numbePhone+"', `Email`='"+email+"', `Nickname`='"+nickname+"', `Ruc`='"+ruc+"', `Direccion`='"+direccion+"' WHERE `idUser`='"+[idUser]+"';")
+    const query="UPDATE `bdAplication_taxi`.`User` SET `NameUser`=?, `NumberPhone`=?, `Email`=?, `Nickname`=?, `Ruc`=?, `Direccion`=? WHERE `idUser`='"+[idUser]+"';"
+    pool.query(query,[nombre,numbePhone,email,nickname,ruc,direccion])
+     req.flash('success','Perfil Actualizado Correctamente')
+     res.redirect('/allUsers')
 })
 
 

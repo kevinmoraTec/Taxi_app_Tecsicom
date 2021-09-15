@@ -6,26 +6,26 @@
                     <h3>Edit Profile</h3>
                 </div>
                 <div class="card-body">
-                    <form action="/editUser/:{{edit.idUser}}" method="POST">
+                    <form action="/editUser/{{profile.idUser}}" method="POST">
                         <div class="mt-3">
-                            <input type="text" value="{{edit.NameUser}}" name="nombre" placeholder="Full Name" class="form-control" autofocus>
+                            <input type="text" value="{{profile.NameUser}}" name="nombre" placeholder="Full Name" class="form-control" autofocus>
                         </div>
                         <div class="mt-3">
-                            <input type="number" value="{{edit.NumberPhone}}" name="numbePhone" placeholder="Telefono"   class="form-control">
+                            <input type="number" value="{{profile.NumberPhone}}" name="numbePhone" placeholder="Telefono"   class="form-control">
                         </div>
                         <div class="mt-3">
-                            <input type="email"  value="{{edit.Email}}" name="email" placeholder="Email" class="form-control">
+                            <input type="email"  value="{{profile.Email}}" name="email" placeholder="Email" class="form-control">
                         </div>
                         
                         <div class="mt-3">
-                            <input type="text" value="{{edit.Nickname}}" name="nickname" placeholder="Nickame" class="form-control">
+                            <input type="text" value="{{profile.Nickname}}" name="nickname" placeholder="Nickame" class="form-control">
                         </div>
 
                         <div class="mt-3">
-                            <input type="number" value="{{edit.Ruc}}" name="ruc" placeholder="Cedula" class="form-control">
+                            <input type="number" value="{{profile.Ruc}}" name="ruc" placeholder="Cedula" class="form-control">
                         </div>
                         <div class="mt-3">
-                            <input type="text" value="{{edit.Direccion}}" name="direccion" placeholder="Direccion" class="form-control">
+                            <input type="text" value="{{profile.Direccion}}" name="direccion" placeholder="Direccion" class="form-control">
                         </div>
                         <div class="mt-3">
                             <button class="btn btn-danger btn-block w-100">
