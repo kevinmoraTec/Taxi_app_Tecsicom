@@ -1,0 +1,58 @@
+<div class="container p-2">
+  {{#each listarDrivers}}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name Driver</th>
+        <th scope="col">Nickname</th>
+        <th scope="col" class="text-center">Placa Driver</th>
+        <!--<th scope="col" class="text-center">Password</th>-->
+        <th scope="col" class="text-right">Ruc</th>
+        <th scope="col" class="text-right">Number Phone</th>
+        <th scope="col" class="text-right">Adress Driver</th>
+        <th scope="col" class="text-right">Email</th>
+        <th scope="col" class="text-right">Date Birthday</th>
+        <!--<th scope="col" class="text-right">Acciones</th>-->
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">{{idDriver}}</td>
+        <td>{{NameDriver}}</td>
+        <td>{{Nickname}}</td>
+        <td>{{PlacaDriver}}</td>
+       <!-- <td>{{Password}}</td>-->
+        <td class="text-right">{{Ruc}}</td>
+        <td class="text-right">{{NumberPhone}}</td>
+        <td class="text-right">{{AddressDriver}}</td>
+        <td class="text-right">{{Email}}</td>
+        <td class="text-right">{{DateBirthday}}</td>
+        <td class="text-right">
+          <a href="/deleteUser/{{idUser}}" class="btn btn-danger">Eliminar</a>
+        </td>
+        <td class="text-right">
+          <a href="/editUser/{{idUser}}" class="btn btn-secondary">Editar</a>
+        </td>
+
+
+
+      </tr>
+    </tbody>
+     {{else}}
+  <div class="col-md-4 mx-auto">
+    <div class="card card-body text-center">
+      <p>No Existen Perfiles Crea Uno</p>
+      <a href="/">No hay perfiles</a>
+    </div>
+  </div>
+    {{/each}}
+
+</div>
+  
+
+
+
+
+

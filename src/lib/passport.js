@@ -105,7 +105,7 @@ passport.use(
       return done(null, newUser);
     }
   )
-);
+);  
 
 passport.serializeUser((user, done) => {
   done(null, user.idUser);
@@ -116,3 +116,43 @@ passport.deserializeUser(async (idUser, done) => {
   done(null, rows[0]);
   // console.log('deserializar  '+Object.values(rows[0]))
 });
+
+//Guardamos un Conductor en la base de datos
+passport.use('driver.signup',new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  passReqToCallback: true
+},async(req,email,password,done)=>{
+  //console.log(req.body)
+  const {nombre,nickname,placa,ruc,numeroPhone,direccion,dateBirthay}=req.body
+  const newDriver={
+      nombre,
+      nickname,
+      placa,
+      ruc,
+      numeroPhone,
+      direccion,
+      email,
+      password,
+      dateBirthay
+  }
+   const newPassword= await helpers.encriptarPassword(password)
+  const query="INSERT INTO `bdAplication_taxi`.`Drivers` (`NameDriver`, `Nickname`, `PlacaDriver`, `Ruc`, `NumberPhone`, `AddressDriver`, `Email`, `Password`, `DateBirthday`) VALUES ('"+nombre+"', '"+nickname+"', '"+placa+"', '"+ruc+"', '"+numeroPhone+"', '"+direccion+"', '"+email+"', '"+newPassword+"', '"+dateBirthay+"');"
+   const result=await pool.query(query,[nombre,nickname,placa,ruc,numeroPhone,direccion,email,password,dateBirthay])
+   //console.log(result)
+   newDriver.idDriver=result.insertId;
+   return done(null,newDriver)
+
+}));
+
+
+
+passport.serializeUser((userDriver,done)=>{
+  done(null,userDriver.idDriver)
+})
+passport.deserializeUser(async (idDriver, done) => {
+  const rows = await pool.query("SELECT * FROM Drivers WHERE idDriver=?", [idDriver]);
+  done(null, rows[0]);
+  console.log('deserializar Driv'+Object.values(rows[0]))
+});
+
