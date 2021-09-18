@@ -50,7 +50,7 @@ router.post('/signin',(req,res,next)=>{
 
 /// Para el perfil de los usuarios cuando inicien seecion
 router.get('/profile',(req,res)=>{
-    res.send('this is your profile')
+    res.render('../views/profile.hbs')
 })
 
 

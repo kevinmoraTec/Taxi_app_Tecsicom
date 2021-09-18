@@ -1,0 +1,44 @@
+<div class="container p-3">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3>Edit Profile Driver</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/editDriver/{{profile.idDriver}}" method="POST">
+                        <div class="mt-3">
+                            <input type="text" value="{{profile.NameDriver}}" name="nombre" placeholder="Full Name" class="form-control" autofocus>
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" value="{{profile.Nickname}}" name="nickname" placeholder="Nickname"   class="form-control">
+                        </div>
+                        <div class="mt-3">
+                            <input type="text"  value="{{profile.PlacaDriver}}" name="placa" placeholder="Placa" class="form-control">
+                        </div>
+                        
+                        <div class="mt-3">
+                            <input type="text" value="{{profile.Ruc}}" name="ruc" placeholder="Ruc" class="form-control">
+                        </div>
+
+                        <div class="mt-3">
+                            <input type="number" value="{{profile.NumberPhone}}" name="numberPhone" placeholder="Number Phone" class="form-control">
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" value="{{profile.AddressDriver}}" name="direccion" placeholder="Direccion" class="form-control">
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" value="{{profile.Email}}" name="email" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-danger btn-block w-100">
+                                Actualizar 
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,7 +31,7 @@ passport.use(
           done(
             null,
             user,
-            req.flash("success", "Welcome " + user.NameUser + "Estas Activo")
+            req.flash("success", "Welcome " + user.NameUser + " Estas Activ@")
           );
         } else {
           //Si la contraseña no es Igual
@@ -114,8 +114,31 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (idUser, done) => {
   const rows = await pool.query("SELECT * FROM User WHERE idUser=?", [idUser]);
   done(null, rows[0]);
-  // console.log('deserializar  '+Object.values(rows[0]))
+   //console.log('deserializar  '+Object.values(rows[0]))
 });
+
+
+//Cuando Inicie seccion el CONDUCTOR
+passport.use('driver.signin',new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  passReqToCallback: true
+},async(req,email,password,done)=>{
+  const rows=await pool.query('SELECT * FROM Drivers WHERE Email=?',[email])
+  if(rows.length > 0){
+    const user=rows[0];
+    const validPassword=await helpers.compararPassword(password,user.Password)
+    if(validPassword){
+      console.log('Entro Aqui Yes')
+      done(null,user,req.flash("success", "Welcome " +user.NameDriver+ "Estas Activo"))
+    }else{
+      console.log('Entro Aqui False')
+      done(null,false,req.flash("message", "Incorrecto Password "))
+    } 
+  }else{
+    return done(null,false,req.flash("message", "El Email no Existe "))
+  }
+}))
 
 //Guardamos un Conductor en la base de datos
 passport.use('driver.signup',new LocalStrategy({
@@ -140,15 +163,15 @@ passport.use('driver.signup',new LocalStrategy({
   const query="INSERT INTO `bdAplication_taxi`.`Drivers` (`NameDriver`, `Nickname`, `PlacaDriver`, `Ruc`, `NumberPhone`, `AddressDriver`, `Email`, `Password`, `DateBirthday`) VALUES ('"+nombre+"', '"+nickname+"', '"+placa+"', '"+ruc+"', '"+numeroPhone+"', '"+direccion+"', '"+email+"', '"+newPassword+"', '"+dateBirthay+"');"
    const result=await pool.query(query,[nombre,nickname,placa,ruc,numeroPhone,direccion,email,password,dateBirthay])
    //console.log(result)
-   newDriver.idDriver=result.insertId;
+   newDriver.idDriver =result.insertId;
    return done(null,newDriver)
 
 }));
 
 
 
-passport.serializeUser((userDriver,done)=>{
-  done(null,userDriver.idDriver)
+passport.serializeUser((driver,done)=>{
+  done(null,driver.idDriver)
 })
 passport.deserializeUser(async (idDriver, done) => {
   const rows = await pool.query("SELECT * FROM Drivers WHERE idDriver=?", [idDriver]);

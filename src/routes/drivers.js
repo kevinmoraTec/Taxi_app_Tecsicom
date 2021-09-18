@@ -4,6 +4,7 @@ const router=express.Router(); //objeto para definir rutas del navegador
 const pool=require('../database')//utilizamos la coneccion para guardar eliminar 
 const passport=require('passport');
 const helpers = require('../lib/helpers');
+const { route } = require('./autentication');
 
 
 router.get('/signupDrives',(req,res)=>{
@@ -60,12 +61,12 @@ router.get('/signinDriver',(req,res)=>{
 
 /// Para resivir los datos de Auntenticacion del usuario
 router.post('/signinDriver',(req,res,next)=>{
-    passport.authenticate('local.signin',{
-        successRedirect: '/profile', //si todo a salido bien me redirecciona 
-        failureRedirect:'/signin',
+    passport.authenticate('driver.signin',{
+        successRedirect: '/profileDrivers',
+        failureRedirect: '/signinDriver',
         failureFlash: true
     })(req,res,next)
-})
+}) 
 
 
 /// Para Mostrar todos los Conductores registrados 
@@ -73,9 +74,47 @@ router.get('/allDrivers',async(req,res)=>{
    const listarDrivers=await pool.query('SELECT * FROM bdAplication_taxi.Drivers')
     res.render('../views/drivers/allProfileDrivers.hbs',{listarDrivers})
 })
-    
-    
+
+///Para Eliminar Un Conductor Seleccionado.
+router.get('/deleteDriver/:idDriver',async(req,res)=>{
+    const{idDriver}=req.params;
+    await pool.query('DELETE  FROM Drivers WHERE idDriver=?',[idDriver])
+    req.flash('success','Driver Eliminado Correctamente')
+    res.redirect('/allDrivers')
+})
+
+/// Para Editara Un Conductor Seleccionado.
+router.get('/editDriver/:idDriver',async(req,res)=>{
+    const {idDriver}=req.params;
+    const profile=await pool.query('SELECT * FROM Drivers WHERE idDriver=?',[idDriver])
+    console.log(profile[0])
+    res.render('../views/drivers/editProfile.hbs',{profile:profile[0]})
+})
+
+/// Para Editar y Enviar Nuevos datos de Drivers
+router.post('/editDriver/:idDriver',async(req,res)=>{
+    const {idDriver}=req.params;
+    const {nombre,nickname,placa,ruc,numberPhone,direccion,email}=req.body
+    const newDriver={
+        nombre,
+        nickname,
+        placa,
+        ruc,
+        numberPhone,
+        direccion,
+        email
+    };
+    const query="UPDATE `bdAplication_taxi`.`Drivers` SET `NameDriver`=?, `Nickname`=?, `PlacaDriver`=?, `Ruc`=?, `NumberPhone`=?, `AddressDriver`=?, `Email`=? WHERE `idDriver`='"+[idDriver]+"';"
+    pool.query(query,[nombre,nickname,placa,ruc,numberPhone,direccion,email])
+    req.flash('success','Perfil Actualizado Correctamente')
+    res.redirect('/allDrivers')
+})
 
 
+//Una vez que ingerese el Driver
+
+router.get('/profileDrivers',(req,res)=>{
+    res.render('../views/profileDriver.hbs')
+})
 
 module.exports=router;
