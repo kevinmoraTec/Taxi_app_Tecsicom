@@ -129,7 +129,11 @@ passport.use('driver.signin',new LocalStrategy({
     const user=rows[0];
     const validPassword=await helpers.compararPassword(password,user.Password)
     if(validPassword){
+      const activo=1;
       console.log('Entro Aqui Yes')
+      const query="INSERT INTO `bdAplication_taxi`.`DriverActivo` (`idDriverBd`, `estado`) VALUES ('"+user.idDriver+"', '"+activo+"');"
+      pool.query(query,[user.idDriver,activo]);
+
       done(null,user,req.flash("success", "Welcome " +user.NameDriver+ "Estas Activo"))
     }else{
       console.log('Entro Aqui False')
