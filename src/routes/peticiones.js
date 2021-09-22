@@ -3,9 +3,10 @@
 const express=require('express')
 const router=express.Router();
 const pool=require('../database')
+const {isLoggedIn}=require('../lib/auth')
 
 /// Mostramos en Formulario para emitir una Solicitud de taxi
-router.get('/add',(req,res)=>{
+router.get('/add',isLoggedIn,(req,res)=>{
     res.render('../views/peticiones/add.hbs')
 })
 

@@ -4,6 +4,7 @@ const router=express.Router(); //objeto para definir rutas del navegador
 const pool=require('../database')//utilizamos la coneccion para guardar eliminar 
 const passport=require('passport');
 const helpers = require('../lib/helpers');
+const {isLoggedIn}=require('../lib/auth')
 
 
 
@@ -49,7 +50,7 @@ router.post('/signin',(req,res,next)=>{
 
 
 /// Para el perfil de los usuarios cuando inicien seecion
-router.get('/profile',(req,res)=>{
+router.get('/profile',isLoggedIn,(req,res)=>{
     res.render('../views/profile.hbs')
 })
 
@@ -138,6 +139,11 @@ router.post('/editUser/:idUser',async (req,res)=>{
     pool.query(query,[nombre,numbePhone,email,nickname,ruc,direccion])
      req.flash('success','Perfil Actualizado Correctamente')
      res.redirect('/allUsers')
+})
+
+router.get('/logout',(req,res)=>{
+    req.logOut()
+    res.redirect('/signin');
 })
 
 
