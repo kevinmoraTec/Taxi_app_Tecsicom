@@ -17,3 +17,31 @@
     float: none; /* Added */
     margin-bottom: 10px; /* Added */
 }
+
+body{
+  background: #283947;
+  overflow: hidden;
+}
+
+.index{
+  width: 100vw;
+  height: 100vh;
+}
+.masthed{
+  color: white;
+  min-height: 30rem;
+  width: 100%;
+  height: 100%;
+  padding-top: 1rem;
+  background: url('/img/taxiFondo.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.masthed h1{
+  font-size: 4rem;
+  margin: 0%;
+  padding: 0%;
+
+}

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-     <a class="navbar-brand " href="#">
+     <a class="navbar-brand " href="/">
     <img src="http://tecsicom.net/home/images/tecsicom_bw.png" width="40" height="40" class="d-inline-block align-top" alt="">
     TaxiApp
   </a>
@@ -18,6 +18,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/signin">Signin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/signup">Signup</a>
         </li>
         {{/if}}
        

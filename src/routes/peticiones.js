@@ -14,7 +14,7 @@ router.get('/add',isLoggedIn,(req,res)=>{
 router.post('/add',async (req,res)=>{
     //let fecha=new Date(); 
     console.log(req.body)
-    let id=2
+    
     const {startDireccion,finalDireccion,descripcion}=req.body
     const newPeticion={
         
@@ -22,8 +22,9 @@ router.post('/add',async (req,res)=>{
         finalDireccion,
         descripcion
     }
+    let id=req.user;
     console.log(newPeticion)
-    const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
+    const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id.idUser+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
     await pool.query(query,[startDireccion,finalDireccion,descripcion])
     req.flash('success','Peticion creada Correctamente')
     res.redirect('/allpeticiones')//los redireccionamos a la vista donde esta sus Peticioes

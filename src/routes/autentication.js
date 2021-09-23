@@ -95,14 +95,14 @@ router.post('/profileimg',async(req,res)=>{
 
 ///// Para poder Listar  los Clientes registrados 
 router.get('/allUsers',async(req,res)=>{
-    const listarUsuarios=await pool.query('SELECT * FROM bdAplication_taxi.User');
+    const listarPeticiones=await pool.query('SELECT * FROM bdAplication_taxi.User');
     //console.log(listarUsuarios)
     res.render('../views/autentication/allProfile.hbs',{listarUsuarios})
     //res.redirect('/allUsers')
 })
 
 //// Para eliminar un usuario registrado ///1.40
-router.get('/deleteUser/:idUser',async(req,res)=>{
+router.get('/deleteUser/:idUser',isLoggedIn,async(req,res)=>{
     const {idUser} =req.params
     await pool.query('DELETE FROM User WHERE idUser =?',[idUser])
     req.flash('success','Usuario Eliminado Correctamente')
@@ -113,7 +113,7 @@ router.get('/deleteUser/:idUser',async(req,res)=>{
 
 
 /// Para Poder editar los datos del perfil de User.
-router.get('/editUser/:idUser',async(req,res)=>{
+router.get('/editUser/:idUser',isLoggedIn,async(req,res)=>{
     const {idUser}=req.params;
     const profile= await pool.query('SELECT * FROM User WHERE idUser =?',[idUser])
     console.log(profile[0])
@@ -122,7 +122,7 @@ router.get('/editUser/:idUser',async(req,res)=>{
 
 
 // Editar los datos del Perfil
-router.post('/editUser/:idUser',async (req,res)=>{
+router.post('/editUser/:idUser',isLoggedIn,async (req,res)=>{
     const {idUser} =req.params  
     const {nombre,numbePhone,email,nickname,ruc,direccion}=req.body;
     const newUser={
