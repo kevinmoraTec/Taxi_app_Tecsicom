@@ -6,8 +6,9 @@ const router=express.Router();
 router.get('/allasignaciones',async(req,res)=>{
     const listarAsignaciones=await pool.query('SELECT * FROM Request ORDER BY idRequest DESC limit 1;')
     
-    console.log(listarAsignaciones)
-    res.render('../views/drivers/asignaciones.hbs',{listarAsignaciones:listarAsignaciones[0]})
+    console.log(listarAsignaciones[0])
+    res.send(listarAsignaciones[0])
+    //res.render('../views/drivers/asignaciones.hbs',{listarAsignaciones:listarAsignaciones[0]})
 })
 
 
