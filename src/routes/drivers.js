@@ -121,8 +121,10 @@ router.get('/profileDrivers',(req,res)=>{
 /// Para ver los usuarios Activos y asignar munualmente las Carreras 
 
 router.post('/addDriverActivo',(req,res)=>{
+    
+    let estado=1;
+    const {idDriverActivo,Nombre,placa,}=req.body
     console.log(req.body);
-    const {idDriverActivo,Nombre,placa,estado,}=req.body
     const query="INSERT INTO `bdAplication_taxi`.`DriverActivo` (`idDriverActivo`, `Nombre`, `placa`, `estado`) VALUES ('"+idDriverActivo+"', '"+Nombre+"', '"+placa+"', '"+estado+"');"
     pool.query(query,[idDriverActivo,Nombre,placa,estado])
     res.send("Driver activo Asignado en la bd")
@@ -149,12 +151,30 @@ router.get('/allDriversActivos',async(req,res)=>{
     const query="INSERT INTO `bdAplication_taxi`.`ViajeManual` (`idRequqest`, `idDriverActivo`, `estado`) VALUES ('"+idUltimoReques+"', '"+idDriverActivo+"', '"+estadoActivoUltimReques+"');"
     pool.query(query,[idUltimoReques,idDriverActivo,estadoActivoUltimReques])
     req.flash('success','Asignado Correctamente')
-    res.send('ok mi llave')
+    res.redirect('/add')
 
 })
 
-
+let idultimarequest=0;
 ///// Aqui te quedaste falta cuando validemos si es la peticion del Driver 
+router.get('/selectViajeManual',async (req,res)=>{
+    const atencion = await pool.query('SELECT * FROM ViajeManual where estado=1 ORDER BY idViajeManual DESC  limit 1 ;');
+    let valores=Object.values(atencion[0])
+    const idDriver=valores[2];
+    const idViajeManual=valores[0];
+     idultimarequest=valores[1];
+    const estadoultimViajemanual=valores[3];
 
+
+    res.send(atencion[0])
+    console.log(atencion[0])
+    console.log(idultimarequest)
+})
+
+router.get('/consultaDatosRequesAsignado',async(req,res)=>{
+    const datosAsignacion=await pool.query("SELECT * FROM bdAplication_taxi.Request where idRequest ="+idultimarequest+";")
+    //console.log(datosAsignacion[0])
+    res.send(datosAsignacion[0])
+})
 
 module.exports=router;
