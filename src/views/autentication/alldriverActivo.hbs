@@ -1,0 +1,45 @@
+<div class="container p-2">
+  {{#each listarDriversAct}}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name Driver</th>
+        <th scope="col">Placa Driver</th>
+        <th scope="col" class="text-center">Estodo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">{{idDriverActivo}}</td>
+        <td>{{Nombre}}</td>
+        <td>{{placa}}</td>
+        <td>{{estado}}</td>
+       <!-- <td>{{Password}}</td>-->
+        <td class="text-right">
+          <a href="/asignarPeticionDriver/{{idDriverActivo}}" class="btn btn-danger">Eliminar</a>
+        </td>
+        <td class="text-right">
+          <a href="/editUser/{{idDriverActivo}}" class="btn btn-secondary">Editar</a>
+        </td>
+
+
+
+      </tr>
+    </tbody>
+     {{else}}
+  <div class="col-md-4 mx-auto">
+    <div class="card card-body text-center">
+      <p>No Tienes Drivers Activos</p>
+      <a href="/">No hay perfiles</a>
+    </div>
+  </div>
+    {{/each}}
+
+</div>
+  
+
+
+
+
+

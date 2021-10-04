@@ -24,4 +24,19 @@ router.post('/allasignaciones',async(req,res)=>{
 })
 
 
+/// Asignaciones Con Latitud y longitud desde la appUsers.
+
+router.get('/addldireccionLL',(req,res)=>{
+    res.send("Okey Recibido")
+})
+
+router.post('/addldireccionLL',(req,res)=>{
+    //console.log(req.body);
+    let estado=1;
+    const {idUserApp,Latitud,Logitud} =req.body
+    console.log("AppUser : "+idUserApp,Latitud,Logitud,estado);
+    const query="INSERT INTO `bdAplication_taxi`.`RequestLL` (`idUserApp`, `Latitud`, `Logitud`, `Estado`) VALUES ('"+idUserApp+"', '"+Latitud+"', '"+Logitud+"', '"+estado+"');"
+    pool.query(query,[idUserApp,Latitud,Logitud,estado])
+    res.send("Peticion App Latitud Longitud Correcto")
+})
 module.exports=router;

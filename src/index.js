@@ -75,7 +75,7 @@ app.use((req,res,next)=>{
     app.locals.success=req.flash('success')//tomamos esa variable de msj y lo hacemos disponible en todas las vistas
     app.locals.message=req.flash('message')
     app.locals.user=req.user
-    app.locals.driver=req.user
+   // app.locals.driver=req.user
     next();
 })
 

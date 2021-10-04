@@ -117,4 +117,44 @@ router.get('/profileDrivers',(req,res)=>{
     res.render('../views/profileDriver.hbs')
 })
 
+
+/// Para ver los usuarios Activos y asignar munualmente las Carreras 
+
+router.post('/addDriverActivo',(req,res)=>{
+    console.log(req.body);
+    const {idDriverActivo,Nombre,placa,estado,}=req.body
+    const query="INSERT INTO `bdAplication_taxi`.`DriverActivo` (`idDriverActivo`, `Nombre`, `placa`, `estado`) VALUES ('"+idDriverActivo+"', '"+Nombre+"', '"+placa+"', '"+estado+"');"
+    pool.query(query,[idDriverActivo,Nombre,placa,estado])
+    res.send("Driver activo Asignado en la bd")
+})
+
+//Para Listar los Drivers Activos.
+router.get('/allDriversActivos',async(req,res)=>{
+    const listarDriversAct=await pool.query('SELECT * FROM bdAplication_taxi.DriverActivo;');
+    //console.log(listarDriversAct)
+    res.render('../views/autentication/alldriverActivo.hbs',{listarDriversAct})
+})
+
+ /// Asignar una peticion a un driver Esoecifico
+ router.get('/asignarPeticionDriver/:idDriverActivo',async(req,res)=>{
+    const {idDriverActivo}=req.params
+    console.log(idDriverActivo);
+    let estadoActivoUltimReques=1;
+
+    const ultimaPeticionAsignada=await pool.query("SELECT idRequest FROM Request ORDER BY idRequest DESC;")
+    // console.log(Object.keys(ultimaPeticionAsignada[0]))
+    // console.log(Object.values(ultimaPeticionAsignada[0]))
+    let idUltimoReques=Object.values(ultimaPeticionAsignada[0])
+
+    const query="INSERT INTO `bdAplication_taxi`.`ViajeManual` (`idRequqest`, `idDriverActivo`, `estado`) VALUES ('"+idUltimoReques+"', '"+idDriverActivo+"', '"+estadoActivoUltimReques+"');"
+    pool.query(query,[idUltimoReques,idDriverActivo,estadoActivoUltimReques])
+    req.flash('success','Asignado Correctamente')
+    res.send('ok mi llave')
+
+})
+
+
+///// Aqui te quedaste falta cuando validemos si es la peticion del Driver 
+
+
 module.exports=router;

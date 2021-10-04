@@ -12,20 +12,26 @@ router.get('/add',isLoggedIn,(req,res)=>{
 
 ///Guardamos una peticion de taxi
 router.post('/add',async (req,res)=>{
-    //let fecha=new Date(); 
-    console.log(req.body)
-    
-    const {startDireccion,finalDireccion,descripcion}=req.body
+    let estado=1; 
+    //console.log(req.body)
+    let id=req.user;
+    const  Admistrador= await pool.query("SELECT NameUser FROM User where idUser="+id.idUser+";");
+
+    const AdministradorActivo=Object.values(Admistrador[0])
+    const {nameUser,startDireccion,finalDireccion,descripcion}=req.body
     const newPeticion={
-        
+        nameUser,
         startDireccion,
         finalDireccion,
-        descripcion
+        descripcion,
+        estado,
+        AdministradorActivo
     }
-    let id=req.user;
+
+    //let id=req.user;
     console.log(newPeticion)
-    const query="INSERT INTO `bdAplication_taxi`.`Request` (`id_User`,`StartDirection`, `FinalDirection`, `Descriptions`) VALUES ('"+id.idUser+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"')"
-    await pool.query(query,[startDireccion,finalDireccion,descripcion])
+    const query="INSERT INTO `bdAplication_taxi`.`Request` (`nameUser`,`StartDirection`, `FinalDirection`, `Descriptions`,`Estado`,`Admistrador`) VALUES ('"+nameUser+"','"+startDireccion+"', '"+finalDireccion+"', '"+descripcion+"','"+estado+"','"+AdministradorActivo+"')"
+    await pool.query(query,[nameUser,startDireccion,finalDireccion,descripcion,estado,AdministradorActivo])
     req.flash('success','Peticion creada Correctamente')
     res.redirect('/allpeticiones')//los redireccionamos a la vista donde esta sus Peticioes
     
@@ -33,7 +39,8 @@ router.post('/add',async (req,res)=>{
 
 // Listamos todas las peticions creadas  
 router.get('/allpeticiones',async (req,res)=>{
-    const peticiones=await pool.query("SELECT * FROM bdAplication_taxi.Request")
+    //const peticiones=await pool.query("SELECT * FROM bdAplication_taxi.Request")
+    const peticiones=await pool.query("SELECT * FROM bdAplication_taxi.Request where Estado=1;")
   console.log(peticiones)
   res.render('../views/peticiones/listPeticiones.hbs',{peticiones}) 
 })
