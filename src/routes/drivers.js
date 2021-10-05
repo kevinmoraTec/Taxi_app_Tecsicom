@@ -171,8 +171,9 @@ router.get('/selectViajeManual',async (req,res)=>{
     console.log(idultimarequest)
 })
 
-router.get('/consultaDatosRequesAsignado',async(req,res)=>{
-    const datosAsignacion=await pool.query("SELECT * FROM bdAplication_taxi.Request where idRequest ="+idultimarequest+";")
+router.get('/consultaDatosRequesAsignado/:idRequest',async(req,res)=>{
+    const {idRequest}=req.params
+    const datosAsignacion=await pool.query("SELECT * FROM bdAplication_taxi.Request where idRequest ="+idRequest+";")
     //console.log(datosAsignacion[0])
     res.send(datosAsignacion[0])
 })
