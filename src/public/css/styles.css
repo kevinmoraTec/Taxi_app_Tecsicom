@@ -19,8 +19,9 @@
 }
 
 body{
-  background: #283947;
+  background: #2e3841;
   overflow: hidden;
+  text-decoration-color: aliceblue;
 }
 
 .index{

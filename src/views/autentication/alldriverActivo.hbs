@@ -1,12 +1,13 @@
 <div class="container p-2">
   {{#each listarDriversAct}}
-  <table class="table table-striped">
+  <table class="table table-warning">
     <thead>
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Name Driver</th>
         <th scope="col">Placa Driver</th>
-        <th scope="col" class="text-center">Estodo</th>
+        <th scope="col" class="text-center">Estado</th>
+        <th scope="col" class="text-center">Accion</th>
       </tr>
     </thead>
     <tbody>
@@ -17,11 +18,9 @@
         <td>{{estado}}</td>
        <!-- <td>{{Password}}</td>-->
         <td class="text-right">
-          <a href="/asignarPeticionDriver/{{idDriverActivo}}" class="btn btn-danger">Eliminar</a>
+          <a href="/asignarPeticionDriver/{{idDriverActivo}}" class="btn btn-danger">Asignar</a>
         </td>
-        <td class="text-right">
-          <a href="/editUser/{{idDriverActivo}}" class="btn btn-secondary">Editar</a>
-        </td>
+
 
 
 

@@ -177,17 +177,18 @@ router.get('/consultaDatosRequesAsignado/:idRequest',async(req,res)=>{
     //console.log(datosAsignacion[0])
     res.send(datosAsignacion[0])
 })
-// router.get('/consultaDatosRequesAsignado/:idRequest',async(req,res)=>{
-//     const {idRequest}=req.params
-//     const datosAsignacion=await pool.query("SELECT * FROM bdAplication_taxi.Request where idRequest ="+idRequest+";")
-//     //console.log(datosAsignacion[0])
-//     res.send(datosAsignacion[0])
-// })// router.get('/consultaDatosRequesAsignado/:idRequest',async(req,res)=>{
-//     const {idRequest}=req.params
-//     const datosAsignacion=await pool.query("SELECT * FROM bdAplication_taxi.Request where idRequest ="+idRequest+";")
-//     //console.log(datosAsignacion[0])
-//     res.send(datosAsignacion[0])
-// })
-// })
+
+// Para editar el estado del Request cuando el driver la Acepte
+router.get('/editarEstadoRequest/:idRequest',async (req,res)=>{
+    const {idRequest}=req.params
+    const datosAsignacionIdRequest=await pool.query("UPDATE `bdAplication_taxi`.`Request` SET `Estado`='0' WHERE `idRequest`='"+idRequest+"';")
+    console.log('Update id Reques'+idRequest);
+    console.log('Uodate Respuesta del Quety'+datosAsignacionIdRequest);
+    res.send('Okey Peticion Asignada Dirigite a la Ubicacion Asignada')
+
+})
+
+
+
 
 module.exports=router;
