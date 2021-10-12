@@ -156,7 +156,7 @@ router.get('/allDriversActivos',async(req,res)=>{
 })
 
 let idultimarequest=0;
-///// Aqui te quedaste falta cuando validemos si es la peticion del Driver 
+///// Aqui  validamos si es la peticion del Driver 
 router.get('/selectViajeManual',async (req,res)=>{
     const atencion = await pool.query('SELECT * FROM ViajeManual where estado=1 ORDER BY idViajeManual DESC  limit 1 ;');
     let valores=Object.values(atencion[0])
