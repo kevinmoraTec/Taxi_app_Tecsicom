@@ -191,4 +191,40 @@ router.get('/editarEstadoRequest/:idRequest',async (req,res)=>{
 
 
 
+////// Rutas para trabajar la Longitud y latitud
+
+/// Obtener los datos del RequestLL CON latitud y longitud
+
+router.get('/allRequestLL',async(req,res)=>{
+    const listarAsignacionesLL=await pool.query('SELECT * FROM RequestLL where Estado =1 ORDER BY id_RequestLL   DESC limit 1;')
+    
+    console.log(listarAsignacionesLL[0])
+    res.send(listarAsignacionesLL[0])
+    //res.render('../views/drivers/asignaciones.hbs',{listarAsignaciones:listarAsignaciones[0]})
+})
+
+//Editar el Estado de la Solicisitud Request LL.
+router.get('/consultaDatosRequesLL/:id_RequestLL',async(req,res)=>{
+    const {id_RequestLL}=req.params
+    const datosAsignacionIdRequest=await pool.query("UPDATE `bdAplication_taxi`.`RequestLL` SET `Estado`='0' WHERE `id_RequestLL`='"+id_RequestLL+"';")
+    console.log('Update id Reques'+id_RequestLL);
+    console.log('Uodate Respuesta del Quety'+datosAsignacionIdRequest);
+    res.send('Okey Peticion Asignada Dirigite a la Ubicacion Asignada')
+})
+
+
+// Para editar el esado de mi RequestLL para que ya no sea visible por los demas:
+
+// Para editar el estado del Request cuando el driver la Acepte
+router.get('/editarEstadoRequestLL/:id_RequestLL',async (req,res)=>{
+    const {id_RequestLL}=req.params
+    const datosAsignacionIdRequestLL=await pool.query("UPDATE `bdAplication_taxi`.`RequestLL` SET `Estado`='0' WHERE `id_RequestLL`='"+id_RequestLL+"';")
+    console.log('Update id Reques'+id_RequestLL);
+    console.log('Uodate Respuesta del Quety'+datosAsignacionIdRequestLL);
+    res.send('Okey Peticion Asignada Dirigite a la Ubicacion Asignada')
+
+})
+
+
+
 module.exports=router;

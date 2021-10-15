@@ -33,12 +33,15 @@ router.get('/addldireccionLL',(req,res)=>{
 router.post('/addldireccionLL',(req,res)=>{
     //console.log(req.body);
     let estado=1;
-    const {idUserApp,nameUserApp,Latitud,Logitud} =req.body
-    console.log("AppUser : "+idUserApp,Latitud,Logitud,estado);
-    const query="INSERT INTO `bdAplication_taxi`.`RequestLL` (`idUserApp`,`nameUserApp`,`Latitud`, `Logitud`, `Estado`) VALUES ('"+idUserApp+"','"+nameUserApp+"', '"+Latitud+"', '"+Logitud+"', '"+estado+"');"
-     pool.query(query,[idUserApp,nameUserApp,Latitud,Logitud,estado])
+    const {idUserApp,nameUserApp,Latitud,Logitud,Referencia} =req.body
+    console.log("AppUser : "+idUserApp,Latitud,Logitud,estado,Referencia);
+    const query="INSERT INTO `bdAplication_taxi`.`RequestLL` (`idUserApp`,`nameUserApp`,`Latitud`, `Logitud`, `Estado`, `Referencia`) VALUES ('"+idUserApp+"','"+nameUserApp+"', '"+Latitud+"', '"+Logitud+"', '"+estado+"','"+Referencia+"');"
+     pool.query(query,[idUserApp,nameUserApp,Latitud,Logitud,estado,Referencia])
     res.send("Peticion App Latitud Longitud Correcto")
 })
+
+
+
 
 
 module.exports=router;
